@@ -17,18 +17,20 @@ function Callback() {
 
         const params = new URLSearchParams(window.location.search)
         const code = params.get("code")
+        const clientId = params.get("client_id") || sessionStorage.getItem('oauth_client_id')
 
-        if (code) {
-            exchangeCodeForToken(code)
+        if (code && clientId) {
+            exchangeCodeForToken(code, clientId)
         } else {
             setStatus('error')
-            statusMapping['error'].message = 'No authorization code found'
+            statusMapping['error'].message = code ? 'Client ID not found' : 'No authorization code found'
         }
 
     }, [])
 
-    async function exchangeCodeForToken(code: string) {
+    async function exchangeCodeForToken(code: string, clientId: string) {
         const tokenUrl = import.meta.env.VITE_TOKEN_URL || "https://hizoxwyykgxtmfvqzwyc.supabase.co/functions/v1/oauth-token"
+        const codeVerifier = sessionStorage.getItem('code_verifier')
         
         try {
             const res = await fetch(tokenUrl, {
@@ -38,28 +40,26 @@ function Callback() {
                 },
                 body: JSON.stringify({
                     code: code,
-                    client_id: import.meta.env.VITE_CLIENT_ID,
+                    client_id: clientId,
                     grant_type: 'authorization_code',
-                    code_verifier: sessionStorage.getItem('code_verifier')
+                    code_verifier: codeVerifier
                 })
             })
 
             const data = await res.json()
             if (res.ok) {
-                console.log("Access Token:", data.access_token)
                 setStatus('success')
                 localStorage.setItem("brandkit_access_token", data.access_token)
                 localStorage.setItem("brandkit_refresh_token", data.refresh_token)
+                localStorage.setItem("brandkit_client_id", clientId)
                 
-                // Clear the code verifier after successful exchange
                 sessionStorage.removeItem('code_verifier')
+                sessionStorage.removeItem('oauth_client_id')
             } else {
-                console.error('Token exchange failed:', data)
                 statusMapping['error'].message = data?.error?.message || 'Token exchange failed'
                 setStatus('error')
             }
         } catch (err) {
-            console.error('Token exchange error:', err)
             statusMapping['error'].message = 'Network error during token exchange'
             setStatus('error')
         }

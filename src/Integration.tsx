@@ -27,11 +27,18 @@ function Integration() {
       return
     }
     
+    if(!clientId?.trim()) {
+      alert('Please provide a Client ID')
+      return
+    }
+    
     setIsLoading(true)
     const codeVerifier = generateCodeVerifier()
     const codeChallenge = await generateCodeChallenge(codeVerifier)
     
+    // Store both code_verifier and client_id in sessionStorage for callback
     sessionStorage.setItem('code_verifier', codeVerifier)
+    sessionStorage.setItem('oauth_client_id', clientId)
 
     const params = new URLSearchParams({
       client_id: clientId,
