@@ -17,8 +17,8 @@ function Integration() {
   const [externalUserId, setExternalUserId] = useState('')
   const [externalWorkspaceId, setExternalWorkspaceId] = useState('')
   const [clientId, setClientId] = useState(import.meta.env.VITE_CLIENT_ID || '')
-  const [authUrl, setAuthUrl] = useState('http://localhost:8080/oauth/authorize')
-  const [redirectUri, setRedirectUri] = useState('http://localhost:5173/callback')
+  const [authUrl, setAuthUrl] = useState(`${import.meta.env.VITE_BRANDKIT_URL}/oauth/authorize`)
+  const [redirectUri, setRedirectUri] = useState(`${import.meta.env.VITE_APP_URL}/callback`)
   const [isLoading, setIsLoading] = useState(false)
   
   const handleConnect = async () => {
