@@ -16,7 +16,7 @@ async function generateCodeChallenge(verifier: string) {
 function Integration() {
   const [externalUserId, setExternalUserId] = useState('')
   const [externalWorkspaceId, setExternalWorkspaceId] = useState('')
-  const [clientId, setClientId] = useState(import.meta.env.VITE_CLIENT_ID || '')
+  const [clientId] = useState(import.meta.env.VITE_CLIENT_ID || '')
   const [authUrl, setAuthUrl] = useState(`${import.meta.env.VITE_BRANDKIT_URL}/oauth/authorize`)
   const [redirectUri, setRedirectUri] = useState(`${import.meta.env.VITE_APP_URL}/callback`)
   const [isLoading, setIsLoading] = useState(false)
@@ -82,7 +82,7 @@ function Integration() {
           />
         </div>
         <p style={{ fontSize: '12px', color: '#666', margin: '-5px 0 0 0' }}>* At least one external ID is required</p>
-        <div>
+        {/* <div>
           <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500', color: '#555' }}>Client ID</label>
           <input
             type="text"
@@ -94,7 +94,7 @@ function Integration() {
             onFocus={(e) => e.target.style.borderColor = '#000'}
             onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
           />
-        </div>
+        </div> */}
         <div>
           <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: '500', color: '#555' }}>Authorization URL</label>
           <input
